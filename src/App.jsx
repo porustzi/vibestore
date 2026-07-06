@@ -5,34 +5,16 @@ import { defaultProducts } from './data/products'
 import CloseIcon from './components/CloseIcon'
 import AudioPlayer from './components/AudioPlayer'
 import SplashScreen from './components/SplashScreen'
-import AdminPanel from './components/AdminPanel'
 import { AnimatePresence, motion } from 'framer-motion'
 
 const HERO_BG = "/hero-bg-CtGpMX4r.jpg"
 const AUDIO_SRC = "/1234567.ogg"
 
-const API_BASE = ""
-
-const loadProducts = async () => {
-  try {
-    const res = await fetch(`${API_BASE}/api/products`)
-    if (res.ok) {
-      const data = await res.json()
-      if (Array.isArray(data) && data.length > 0) return data
-    }
-  } catch {}
+const loadProducts = () => {
   return defaultProducts
 }
 
-const saveProducts = async (products) => {
-  try {
-    await fetch(`${API_BASE}/api/products`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ products })
-    })
-  } catch {}
-}
+const saveProducts = () => {}
 
 function App() {
   const isAdminRoute = () => window.location.hash === "#/admin" || window.location.pathname === "/admin"
@@ -47,11 +29,7 @@ function App() {
   const [rulesOpen, setRulesOpen] = useState(false)
   const [activeCategory, setActiveCategory] = useState("Усі товари")
   const [titleVisible, setTitleVisible] = useState(false)
-  const [products, setProducts] = useState(defaultProducts)
-
-  useEffect(() => {
-    loadProducts().then(data => setProducts(data))
-  }, [])
+  const [products, setProducts] = useState(loadProducts)
   const [cart, setCart] = useState(() => {
     try { return JSON.parse(localStorage.getItem("vibestore_cart") || "[]") }
     catch { return [] }
@@ -72,7 +50,9 @@ function App() {
 
   useEffect(() => {
     const checkHash = () => {
-      if (window.location.hash === "#/admin") setAdminOpen(true)
+      if (window.location.hash === "#/admin") {
+        window.location.href = "/admin/"
+      }
     }
     window.addEventListener("hashchange", checkHash)
     checkHash()
@@ -113,13 +93,6 @@ function App() {
       setLogoTaps(0)
     }
     setTimeout(() => setLogoTaps(0), 2000)
-  }
-
-  const handleDeleteProduct = async (id) => {
-    if (!confirm("Видалити цей товар?")) return
-    const updated = products.filter(p => p.id !== id)
-    setProducts(updated)
-    await saveProducts(updated)
   }
 
   const addToCart = (product, size) => {
@@ -219,14 +192,8 @@ ${productList}
   })()
 
   if (adminOpen) {
-    return (
-      <AdminPanel
-        products={products}
-        setProducts={setProducts}
-        saveProducts={saveProducts}
-        onClose={() => { setAdminOpen(false); window.location.hash = "" }}
-      />
-    )
+    window.location.href = "/admin/"
+    return null
   }
 
   return (
@@ -366,9 +333,6 @@ ${productList}
               filteredProducts.map(product => (
                 <div key={product.id} className="product-scroll-anim" onClick={() => openProductModal(product)}>
                   <div className="product-card">
-                    {adminOpen && (
-                      <div className="delete-icon" onClick={(e) => { e.stopPropagation(); handleDeleteProduct(product.id) }}>🗑</div>
-                    )}
                     <div className="product-image-wrapper">
                       <img src={product.images?.[0] || "https://via.placeholder.com/150"} alt={product.name} className="product-image" />
                     </div>

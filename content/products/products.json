@@ -1,24 +1,12 @@
-export const defaultProducts = [
+[
   {
     "id": 1,
     "name": "Товар 1",
     "price": "3 200",
     "desc": "Преміальний комфорт та футуристичний силует.",
     "category": "Кросівки",
-    "sizes": {
-      "37": true,
-      "38": true,
-      "39": true,
-      "40": true,
-      "41": true,
-      "42": true,
-      "43": true,
-      "44": true,
-      "45": true
-    },
-    "images": [
-      "https://via.placeholder.com/150"
-    ],
+    "sizes": {"37": true, "38": true, "39": true, "40": true, "41": true, "42": true, "43": true, "44": true, "45": true},
+    "images": ["https://via.placeholder.com/150"],
     "currentImageIndex": 0,
     "topDrop": true
   },
@@ -28,20 +16,8 @@ export const defaultProducts = [
     "price": "5 700",
     "desc": "Масивний дизайн у стилі нульових.",
     "category": "Кросівки",
-    "sizes": {
-      "37": true,
-      "38": true,
-      "39": true,
-      "40": true,
-      "41": true,
-      "42": true,
-      "43": true,
-      "44": true,
-      "45": true
-    },
-    "images": [
-      "https://via.placeholder.com/150"
-    ],
+    "sizes": {"37": true, "38": true, "39": true, "40": true, "41": true, "42": true, "43": true, "44": true, "45": true},
+    "images": ["https://via.placeholder.com/150"],
     "currentImageIndex": 0,
     "topDrop": true
   },
@@ -51,20 +27,8 @@ export const defaultProducts = [
     "price": "5 000",
     "desc": "Спортивна естетика в деконструйованому стилі.",
     "category": "Кросівки",
-    "sizes": {
-      "37": true,
-      "38": true,
-      "39": true,
-      "40": true,
-      "41": true,
-      "42": true,
-      "43": true,
-      "44": true,
-      "45": true
-    },
-    "images": [
-      "https://via.placeholder.com/150"
-    ],
+    "sizes": {"37": true, "38": true, "39": true, "40": true, "41": true, "42": true, "43": true, "44": true, "45": true},
+    "images": ["https://via.placeholder.com/150"],
     "currentImageIndex": 0,
     "topDrop": true
   },
@@ -74,15 +38,8 @@ export const defaultProducts = [
     "price": "1 800",
     "desc": "Джинси клёш з ідеальною посадкою.",
     "category": "Штани та джинси",
-    "sizes": {
-      "S": true,
-      "M": true,
-      "L": true,
-      "XL": true
-    },
-    "images": [
-      "https://via.placeholder.com/150"
-    ],
+    "sizes": {"S": true, "M": true, "L": true, "XL": true},
+    "images": ["https://via.placeholder.com/150"],
     "currentImageIndex": 0
   },
   {
@@ -91,15 +48,8 @@ export const defaultProducts = [
     "price": "2 600",
     "desc": "Класичний світшот з м'якої бавовни.",
     "category": "Худі та світшоти",
-    "sizes": {
-      "S": true,
-      "M": true,
-      "L": true,
-      "XL": true
-    },
-    "images": [
-      "https://via.placeholder.com/150"
-    ],
+    "sizes": {"S": true, "M": true, "L": true, "XL": true},
+    "images": ["https://via.placeholder.com/150"],
     "currentImageIndex": 0
   },
   {
@@ -108,20 +58,8 @@ export const defaultProducts = [
     "price": "4 200",
     "desc": "Вінтажні кросівки зธรรมних матеріалів.",
     "category": "Кросівки",
-    "sizes": {
-      "37": true,
-      "38": true,
-      "39": true,
-      "40": true,
-      "41": true,
-      "42": true,
-      "43": true,
-      "44": true,
-      "45": true
-    },
-    "images": [
-      "https://via.placeholder.com/150"
-    ],
+    "sizes": {"37": true, "38": true, "39": true, "40": true, "41": true, "42": true, "43": true, "44": true, "45": true},
+    "images": ["https://via.placeholder.com/150"],
     "currentImageIndex": 0
   },
   {
@@ -130,15 +68,8 @@ export const defaultProducts = [
     "price": "450",
     "desc": "Яскраві шкарпетки з унікальним принтом.",
     "category": "Шкарпетки",
-    "sizes": {
-      "S": true,
-      "M": true,
-      "L": true,
-      "XL": true
-    },
-    "images": [
-      "https://via.placeholder.com/150"
-    ],
+    "sizes": {"S": true, "M": true, "L": true, "XL": true},
+    "images": ["https://via.placeholder.com/150"],
     "currentImageIndex": 0
   },
   {
@@ -147,15 +78,8 @@ export const defaultProducts = [
     "price": "450",
     "desc": "Базові шкарпетки преміум якості.",
     "category": "Шкарпетки",
-    "sizes": {
-      "S": true,
-      "M": true,
-      "L": true,
-      "XL": true
-    },
-    "images": [
-      "https://via.placeholder.com/150"
-    ],
+    "sizes": {"S": true, "M": true, "L": true, "XL": true},
+    "images": ["https://via.placeholder.com/150"],
     "currentImageIndex": 0
   },
   {
@@ -164,15 +88,8 @@ export const defaultProducts = [
     "price": "3 400",
     "desc": "Оверсайз худі з нашивкою.",
     "category": "Худі та світшоти",
-    "sizes": {
-      "S": true,
-      "M": true,
-      "L": true,
-      "XL": true
-    },
-    "images": [
-      "https://via.placeholder.com/150"
-    ],
+    "sizes": {"S": true, "M": true, "L": true, "XL": true},
+    "images": ["https://via.placeholder.com/150"],
     "currentImageIndex": 0
   },
   {
@@ -181,15 +98,8 @@ export const defaultProducts = [
     "price": "2 100",
     "desc": "Мінімалістичний світшот для щоденного носіння.",
     "category": "Худі та світшоти",
-    "sizes": {
-      "S": true,
-      "M": true,
-      "L": true,
-      "XL": true
-    },
-    "images": [
-      "https://via.placeholder.com/150"
-    ],
+    "sizes": {"S": true, "M": true, "L": true, "XL": true},
+    "images": ["https://via.placeholder.com/150"],
     "currentImageIndex": 0
   }
 ]
