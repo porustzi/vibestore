@@ -12,6 +12,13 @@ const HERO_BG = "/hero-bg-CtGpMX4r.jpg"
 const AUDIO_SRC = "/1234567.ogg"
 
 const loadProducts = () => {
+  try {
+    const cached = localStorage.getItem("vibestore_products")
+    if (cached) {
+      const parsed = JSON.parse(cached)
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed
+    }
+  } catch {}
   return defaultProducts
 }
 
