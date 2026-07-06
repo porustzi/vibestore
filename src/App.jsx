@@ -202,6 +202,17 @@ ${productList}
     ? sizesShoes
     : sizesClothes
 
+  if (adminOpen) {
+    return (
+      <AdminPanel
+        products={products}
+        setProducts={setProducts}
+        saveProducts={saveProducts}
+        onClose={() => { setAdminOpen(false); window.location.hash = "" }}
+      />
+    )
+  }
+
   return (
     <div className="app-container">
       {!splashDone && <SplashScreen onDone={() => setSplashDone(true)} />}
@@ -218,16 +229,6 @@ ${productList}
           <h1 className="main-logo" onClick={handleLogoClick}>VIBE STORE</h1>
         </div>
       </header>
-
-      {/* ── Admin Panel ── */}
-      {adminOpen && (
-        <AdminPanel
-          products={products}
-          setProducts={setProducts}
-          saveProducts={saveProducts}
-          onClose={() => setAdminOpen(false)}
-        />
-      )}
 
       {/* ── Drawer Overlay ── */}
       <div className={`drawer-overlay ${(catalogOpen || cartOpen) ? "visible" : ""}`}

@@ -112,6 +112,7 @@ export default function AdminPanel({ products, setProducts, saveProducts, onClos
     return (
       <div className="admin-overlay">
         <div className="admin-login-modal">
+          <button className="admin-close-btn" onClick={onClose} style={{ fontSize: 18, marginBottom: 8 }}>← Назад</button>
           <h2>🔐 Вхід в адмін-панель</h2>
           <input
             type="password"
@@ -133,8 +134,11 @@ export default function AdminPanel({ products, setProducts, saveProducts, onClos
     <div className="admin-overlay">
       <div className="admin-full-panel">
         <div className="admin-panel-header">
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <button className="admin-close-btn" onClick={onClose} style={{ fontSize: 18 }}>← Назад</button>
+          </div>
           <h2>⚡ Панель керування</h2>
-          <button className="admin-close-btn" onClick={onClose}>✕</button>
+          <div />
         </div>
 
         <div className="admin-tabs">
