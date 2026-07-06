@@ -11,8 +11,17 @@ export default function SplashScreen({ onDone }) {
 
   return (
     <div className={`splash-screen ${fadeOut ? "fade-out" : ""}`}>
-      <img src="/hero-bg-CtGpMX4r.jpg" alt="VIBE STORE" className="splash-logo" />
-      <div className="splash-text">VIBE STORE</div>
+      <div className="splash-bg-blur" />
+      <div className="splash-glow" />
+      <div className="splash-content">
+        <img src="/hero-bg-CtGpMX4r.jpg" alt="VIBE STORE" className="splash-logo" />
+        <div className="splash-text">VIBE STORE</div>
+        <div className="splash-dots">
+          <span className="splash-dot" />
+          <span className="splash-dot" />
+          <span className="splash-dot" />
+        </div>
+      </div>
     </div>
   )
 }

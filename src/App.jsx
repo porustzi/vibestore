@@ -27,8 +27,8 @@ const saveProducts = (products) => {
 }
 
 function App() {
-  const [splashDone, setSplashDone] = useState(false)
-  const [adminOpen, setAdminOpen] = useState(false)
+  const [splashDone, setSplashDone] = useState(() => window.location.pathname === "/admin" ? true : false)
+  const [adminOpen, setAdminOpen] = useState(() => window.location.pathname === "/admin")
   const [logoTaps, setLogoTaps] = useState(0)
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [selectedSize, setSelectedSize] = useState(null)
