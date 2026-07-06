@@ -14,8 +14,8 @@ export default function SplashScreen({ onDone }) {
       <div className="splash-bg-blur" />
       <div className="splash-glow" />
       <div className="splash-content">
-        <img src="/hero-bg-CtGpMX4r.jpg" alt="VIBE STORE" className="splash-logo" />
-        <div className="splash-text">VIBE STORE</div>
+        <div className="splash-title-fancy">𝐕𝐈𝐁𝐄 𝐒𝐓𝐎𝐑𝐄</div>
+        <div className="splash-subtitle">людкові речі під замовлення</div>
         <div className="splash-dots">
           <span className="splash-dot" />
           <span className="splash-dot" />
