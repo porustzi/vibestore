@@ -1,5 +1,4 @@
-const ADMIN_LOGIN = "admin"
-const ADMIN_PASSWORD = "8934"
+const ADMIN_PASSWORD = "vibe123store"
 
 export async function onRequestPost(context) {
   const { env } = context
@@ -17,12 +16,7 @@ export async function onRequestPost(context) {
     return new Response(JSON.stringify({ error: "Invalid password" }), { status: 401 })
   }
 
-  const token = env.GITHUB_PAT
-  if (!token) {
-    return new Response(JSON.stringify({ error: "GitHub token not configured" }), { status: 500 })
-  }
-
-  return new Response(JSON.stringify({ token }), {
+  return new Response(JSON.stringify({ ok: true }), {
     headers: {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*"
