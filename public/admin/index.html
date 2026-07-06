@@ -3,1474 +3,342 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VIBE STORE — Admin Panel</title>
+<title>VIBE STORE — Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0f1115;
-    --surface: #1a1d24;
-    --surface-2: #22262e;
-    --border: #2a2e37;
-    --border-hover: #3a3e47;
-    --text: #e8eaed;
-    --text-muted: #8b8f98;
-    --accent: #7c3aed;
-    --accent-hover: #6d28d9;
-    --accent-light: rgba(124, 58, 237, 0.15);
-    --danger: #ef4444;
-    --danger-hover: #dc2626;
-    --danger-light: rgba(239, 68, 68, 0.15);
-    --success: #22c55e;
-    --success-light: rgba(34, 197, 94, 0.15);
-    --warning: #f59e0b;
-    --radius: 10px;
-    --radius-sm: 6px;
-    --shadow: 0 4px 24px rgba(0,0,0,0.3);
-    --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: var(--font);
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    line-height: 1.5;
-  }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
-
-  /* Header */
-  .header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 24px;
-    height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    backdrop-filter: blur(12px);
-  }
-
-  .header-left { display: flex; align-items: center; gap: 16px; }
-
-  .logo {
-    font-size: 20px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-    background: linear-gradient(135deg, var(--accent), #a78bfa);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .header-badge {
-    background: var(--accent-light);
-    color: var(--accent);
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-  }
-
-  .header-right { display: flex; align-items: center; gap: 12px; }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    border-radius: var(--radius-sm);
-    font-family: var(--font);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-
-  .btn:active { transform: scale(0.97); }
-
-  .btn-primary {
-    background: var(--accent);
-    color: white;
-  }
-  .btn-primary:hover { background: var(--accent-hover); }
-
-  .btn-ghost {
-    background: transparent;
-    color: var(--text-muted);
-    border: 1px solid var(--border);
-  }
-  .btn-ghost:hover { color: var(--text); border-color: var(--border-hover); background: var(--surface-2); }
-
-  .btn-danger {
-    background: var(--danger-light);
-    color: var(--danger);
-  }
-  .btn-danger:hover { background: var(--danger); color: white; }
-
-  .btn-success {
-    background: var(--success-light);
-    color: var(--success);
-  }
-  .btn-success:hover { background: var(--success); color: white; }
-
-  .btn-sm { padding: 6px 10px; font-size: 12px; }
-
-  /* Main */
-  .main { max-width: 1280px; margin: 0 auto; padding: 24px; }
-
-  /* Login */
-  .login-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 24px;
-  }
-
-  .login-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 40px;
-    width: 100%;
-    max-width: 400px;
-    box-shadow: var(--shadow);
-  }
-
-  .login-card h1 {
-    font-size: 24px;
-    font-weight: 800;
-    margin-bottom: 4px;
-    background: linear-gradient(135deg, var(--accent), #a78bfa);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .login-card p {
-    color: var(--text-muted);
-    font-size: 14px;
-    margin-bottom: 28px;
-  }
-
-  .form-group { margin-bottom: 16px; }
-
-  .form-group label {
-    display: block;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-muted);
-    margin-bottom: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .form-input {
-    width: 100%;
-    padding: 10px 14px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    color: var(--text);
-    font-family: var(--font);
-    font-size: 14px;
-    transition: border-color 0.2s;
-    outline: none;
-  }
-
-  .form-input:focus { border-color: var(--accent); }
-
-  .form-input::placeholder { color: var(--text-muted); }
-
-  select.form-input {
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b8f98' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    padding-right: 36px;
-  }
-
-  textarea.form-input {
-    resize: vertical;
-    min-height: 80px;
-  }
-
-  .btn-full { width: 100%; justify-content: center; padding: 12px; font-size: 14px; }
-
-  /* Stats */
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-  }
-
-  .stat-card .stat-value {
-    font-size: 28px;
-    font-weight: 800;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-
-  .stat-card .stat-label {
-    font-size: 12px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  /* Toolbar */
-  .toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-  }
-
-  .search-box {
-    position: relative;
-    flex: 1;
-    max-width: 320px;
-  }
-
-  .search-box input {
-    width: 100%;
-    padding: 8px 14px 8px 36px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    color: var(--text);
-    font-family: var(--font);
-    font-size: 13px;
-    outline: none;
-  }
-
-  .search-box input:focus { border-color: var(--accent); }
-
-  .search-box svg {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-muted);
-  }
-
-  .filter-pills {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-
-  .pill {
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--text-muted);
-    transition: all 0.2s;
-    font-family: var(--font);
-  }
-
-  .pill:hover { border-color: var(--border-hover); color: var(--text); }
-  .pill.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: white;
-  }
-
-  /* Products table */
-  .products-table-wrap {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-
-  .products-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  .products-table th {
-    padding: 12px 16px;
-    text-align: left;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface-2);
-  }
-
-  .products-table td {
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
-    vertical-align: middle;
-  }
-
-  .products-table tr:last-child td { border-bottom: none; }
-
-  .products-table tr:hover td { background: var(--surface-2); }
-
-  .product-cell {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .product-thumb {
-    width: 48px;
-    height: 48px;
-    border-radius: var(--radius-sm);
-    object-fit: cover;
-    background: var(--bg);
-    flex-shrink: 0;
-  }
-
-  .product-name {
-    font-weight: 600;
-    font-size: 14px;
-  }
-
-  .product-price {
-    color: var(--accent);
-    font-weight: 700;
-  }
-
-  .product-category {
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 600;
-    background: var(--accent-light);
-    color: var(--accent);
-  }
-
-  .product-sizes {
-    display: flex;
-    gap: 4px;
-    flex-wrap: wrap;
-  }
-
-  .size-badge {
-    display: inline-block;
-    padding: 2px 6px;
-    border-radius: 3px;
-    font-size: 10px;
-    font-weight: 600;
-    background: var(--surface-2);
-    color: var(--text-muted);
-    border: 1px solid var(--border);
-  }
-
-  .size-badge.active {
-    background: var(--success-light);
-    color: var(--success);
-    border-color: var(--success);
-  }
-
-  .actions-cell {
-    display: flex;
-    gap: 6px;
-  }
-
-  .top-badge {
-    display: inline-block;
-    padding: 2px 6px;
-    border-radius: 3px;
-    font-size: 10px;
-    font-weight: 700;
-    background: var(--warning);
-    color: #000;
-  }
-
-  /* Modal */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
-    z-index: 200;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-    backdrop-filter: blur(4px);
-  }
-
-  .modal-overlay.open { display: flex; }
-
-  .modal {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    width: 100%;
-    max-width: 640px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-  }
-
-  .modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 24px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .modal-header h2 {
-    font-size: 18px;
-    font-weight: 700;
-  }
-
-  .modal-close {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    border: none;
-    background: var(--surface-2);
-    color: var(--text-muted);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    transition: all 0.2s;
-  }
-
-  .modal-close:hover { background: var(--danger); color: white; }
-
-  .modal-body { padding: 24px; }
-
-  .modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    padding: 16px 24px;
-    border-top: 1px solid var(--border);
-  }
-
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-
-  .checkbox-group {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-
-  .checkbox-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 10px;
-    border-radius: var(--radius-sm);
-    background: var(--bg);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 12px;
-    font-weight: 600;
-    user-select: none;
-  }
-
-  .checkbox-item:hover { border-color: var(--accent); }
-
-  .checkbox-item.checked {
-    background: var(--accent-light);
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  .checkbox-item input { display: none; }
-
-  .image-upload-zone {
-    border: 2px dashed var(--border);
-    border-radius: var(--radius);
-    padding: 24px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    color: var(--text-muted);
-    font-size: 13px;
-  }
-
-  .image-upload-zone:hover {
-    border-color: var(--accent);
-    background: var(--accent-light);
-  }
-
-  .image-upload-zone input { display: none; }
-
-  .image-preview {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: 12px;
-  }
-
-  .image-preview img {
-    width: 64px;
-    height: 64px;
-    border-radius: var(--radius-sm);
-    object-fit: cover;
-    border: 2px solid var(--border);
-  }
-
-  .image-preview img.active {
-    border-color: var(--accent);
-  }
-
-  .topdrop-toggle {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .topdrop-toggle:hover { border-color: var(--accent); }
-
-  .topdrop-toggle.active {
-    background: var(--accent-light);
-    border-color: var(--accent);
-  }
-
-  .topdrop-toggle .toggle-track {
-    width: 36px;
-    height: 20px;
-    border-radius: 10px;
-    background: var(--border);
-    position: relative;
-    transition: background 0.2s;
-  }
-
-  .topdrop-toggle.active .toggle-track {
-    background: var(--accent);
-  }
-
-  .topdrop-toggle .toggle-thumb {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: white;
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    transition: transform 0.2s;
-  }
-
-  .topdrop-toggle.active .toggle-thumb {
-    transform: translateX(16px);
-  }
-
-  /* Toast */
-  .toast-container {
-    position: fixed;
-    top: 80px;
-    right: 24px;
-    z-index: 300;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .toast {
-    padding: 12px 20px;
-    border-radius: var(--radius-sm);
-    font-size: 13px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    animation: slideIn 0.3s ease, fadeOut 0.3s ease 3.7s;
-    box-shadow: var(--shadow);
-    max-width: 360px;
-  }
-
-  .toast.success {
-    background: #166534;
-    border: 1px solid var(--success);
-    color: #bbf7d0;
-  }
-
-  .toast.error {
-    background: #7f1d1d;
-    border: 1px solid var(--danger);
-    color: #fecaca;
-  }
-
-  .toast.warning {
-    background: #78350f;
-    border: 1px solid var(--warning);
-    color: #fef3c7;
-  }
-
-  @keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-  }
-
-  @keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
-  }
-
-  /* Loading */
-  .spinner {
-    width: 20px;
-    height: 20px;
-    border: 2px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
-  }
-
-  .spinner-sm { width: 14px; height: 14px; border-width: 2px; }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .loading-overlay {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 60px;
-    color: var(--text-muted);
-    gap: 12px;
-    font-size: 14px;
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: 60px 24px;
-    color: var(--text-muted);
-  }
-
-  .empty-state svg {
-    margin-bottom: 16px;
-    color: var(--border);
-  }
-
-  .empty-state h3 {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 4px;
-    color: var(--text);
-  }
-
-  .empty-state p { font-size: 13px; }
-
-  /* Confirm Dialog */
-  .confirm-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
-    z-index: 300;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-    backdrop-filter: blur(4px);
-  }
-
-  .confirm-overlay.open { display: flex; }
-
-  .confirm-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 28px;
-    max-width: 400px;
-    width: 100%;
-    text-align: center;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-  }
-
-  .confirm-box h3 {
-    font-size: 16px;
-    margin-bottom: 8px;
-  }
-
-  .confirm-box p {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-bottom: 20px;
-  }
-
-  .confirm-box .btn-group {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    .header { padding: 0 16px; }
-    .main { padding: 16px; }
-    .form-row { grid-template-columns: 1fr; }
-    .toolbar { flex-direction: column; align-items: stretch; }
-    .search-box { max-width: 100%; }
-    .products-table-wrap { overflow-x: auto; }
-    .products-table { min-width: 600px; }
-    .modal { max-width: 100%; margin: 12px; }
-    .modal-body { padding: 16px; }
-    .stats { grid-template-columns: 1fr 1fr; }
-    .login-card { padding: 24px; }
-    .filter-pills { display: none; }
-  }
-
-  @media (max-width: 480px) {
-    .stats { grid-template-columns: 1fr; }
-    .header-badge { display: none; }
-  }
-
-  .hidden { display: none !important; }
-
-  .page-section { display: none; }
-  .page-section.active { display: block; }
+:root{--bg:#0f1115;--surface:#1a1d24;--surface-2:#22262e;--border:#2a2e37;--border-hover:#3a3e47;--text:#e8eaed;--text-muted:#8b8f98;--accent:#7c3aed;--accent-hover:#6d28d9;--accent-light:rgba(124,58,237,0.15);--danger:#ef4444;--danger-hover:#dc2626;--success:#22c55e;--success-light:rgba(34,197,94,0.15);--warning:#f59e0b;--radius:10px;--radius-sm:6px;--font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.login-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:40px;width:100%;max-width:380px;text-align:center}
+.login-card h1{font-size:28px;font-weight:800;letter-spacing:-1px;background:linear-gradient(135deg,var(--accent),#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.login-card p{color:var(--text-muted);font-size:14px;margin-bottom:24px}
+.form-group{margin-bottom:16px;text-align:left}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px}
+.form-input{width:100%;padding:10px 14px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:14px;outline:none;transition:border-color 0.2s}
+.form-input:focus{border-color:var(--accent)}
+.form-input::placeholder{color:var(--text-muted)}
+
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:var(--radius-sm);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all 0.2s}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accent-hover)}
+.btn-danger{background:var(--danger-light);color:var(--danger)}.btn-danger:hover{background:var(--danger);color:#fff}
+.btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border)}.btn-ghost:hover{border-color:var(--border-hover);color:var(--text)}
+.btn-success{background:var(--success);color:#fff}.btn-success:hover{opacity:0.9}
+.btn-full{width:100%;justify-content:center}
+.btn-sm{padding:6px 12px;font-size:12px}
+
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.header-left{display:flex;align-items:center;gap:12px}
+.logo{font-size:18px;font-weight:800;background:linear-gradient(135deg,var(--accent),#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.badge{background:var(--accent-light);color:var(--accent);padding:3px 8px;border-radius:12px;font-size:11px;font-weight:600}
+.header-right{display:flex;gap:8px}
+
+.main{max-width:900px;margin:0 auto;padding:24px}
+.error-text{color:var(--danger);font-size:13px;margin-top:8px;display:none}
+
+.toolbar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.toolbar .btn{flex-shrink:0}
+
+.product-grid{display:grid;gap:12px}
+.product-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:flex;gap:16px;align-items:flex-start;transition:border-color 0.2s}
+.product-item:hover{border-color:var(--border-hover)}
+.product-img{width:80px;height:80px;border-radius:var(--radius-sm);object-fit:cover;background:var(--surface-2);flex-shrink:0}
+.product-info{flex:1;min-width:0}
+.product-name{font-weight:700;font-size:15px;margin-bottom:4px}
+.product-meta{font-size:13px;color:var(--text-muted)}
+.product-actions{display:flex;gap:6px;flex-shrink:0}
+
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:200;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
+.modal-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.modal-header h2{font-size:18px;font-weight:700}
+.modal-close{background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px}
+.modal-close:hover{color:var(--text)}
+.modal-body{padding:24px}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.checkbox-group{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.checkbox-label{display:flex;align-items:center;gap:6px;padding:5px 10px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:12px;cursor:pointer;transition:all 0.2s}
+.checkbox-label:has(input:checked){border-color:var(--accent);background:var(--accent-light);color:var(--accent)}
+.checkbox-label input{display:none}
+
+.topdrop-tag{background:var(--accent-light);color:var(--accent);padding:2px 6px;border-radius:4px;font-size:10px;font-weight:600;margin-left:8px}
+
+.toast-box{position:fixed;top:20px;right:20px;z-index:300;display:flex;flex-direction:column;gap:8px}
+.toast{padding:12px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;display:flex;align-items:center;gap:8px;animation:slideIn 0.3s ease;min-width:200px}
+.toast.success{background:var(--success);color:#fff}
+.toast.error{background:var(--danger);color:#fff}
+.toast.warning{background:var(--warning);color:#000}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.empty{text-align:center;padding:60px 20px;color:var(--text-muted)}
+.empty svg{margin-bottom:16px;opacity:0.3}
+
+@media(max-width:640px){
+  .form-row{grid-template-columns:1fr}
+  .product-item{flex-direction:column}
+  .product-img{width:100%;height:160px}
+  .toolbar{flex-direction:column}
+  .toolbar .btn{width:100%;justify-content:center}
+}
 </style>
 </head>
 <body>
 
-<!-- Toast Container -->
-<div class="toast-container" id="toastContainer"></div>
+<div class="toast-box" id="toastBox"></div>
 
-<!-- Confirm Dialog -->
-<div class="confirm-overlay" id="confirmOverlay">
-  <div class="confirm-box">
-    <h3 id="confirmTitle">Видалити?</h3>
-    <p id="confirmMessage">Це дію неможливо скасувати.</p>
-    <div class="btn-group">
-      <button class="btn btn-ghost" onclick="closeConfirm()">Скасувати</button>
-      <button class="btn btn-danger" id="confirmAction">Видалити</button>
+<!-- Login -->
+<div id="loginPage" class="login-wrap">
+  <div class="login-card">
+    <h1>VIBE STORE</h1>
+    <p>Увійдіть до адмін-панелі</p>
+    <div class="form-group">
+      <label>Пароль</label>
+      <input type="password" class="form-input" id="loginPw" placeholder="Введіть пароль" autocomplete="off">
     </div>
+    <div class="error-text" id="loginErr"></div>
+    <button class="btn btn-primary btn-full" id="loginBtn" onclick="doLogin()">Увійти</button>
   </div>
 </div>
 
-<!-- Login Page -->
-<div class="page-section active" id="loginPage">
-  <div class="login-wrapper">
-    <div class="login-card">
-      <h1>VIBE STORE</h1>
-      <p>Увійдіть до адмін-панелі</p>
-      <div class="form-group">
-        <label>Пароль</label>
-        <input type="password" class="form-input" id="loginPassword" placeholder="Введіть пароль" autocomplete="off">
-      </div>
-      <div class="form-group">
-        <label>GitHub токен</label>
-        <input type="password" class="form-input" id="loginGithubToken" placeholder="ghp_..." autocomplete="off">
-        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Потрібен для збереження товарів в GitHub</div>
-      </div>
-      <div id="loginError" style="color: var(--danger); font-size: 13px; margin-bottom: 12px; display: none;"></div>
-      <button class="btn btn-primary btn-full" id="loginBtn" onclick="doLogin()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        Увійти
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- Admin Panel -->
-<div class="page-section" id="adminPage">
+<!-- Admin -->
+<div id="adminPage" style="display:none">
   <header class="header">
     <div class="header-left">
       <span class="logo">VIBE STORE</span>
-      <span class="header-badge">ADMIN</span>
+      <span class="badge">ADMIN</span>
     </div>
     <div class="header-right">
-      <a href="/" class="btn btn-ghost btn-sm">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        На сайт
-      </a>
-      <button class="btn btn-ghost btn-sm" onclick="doLogout()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
-        Вийти
-      </button>
+      <a href="/" class="btn btn-ghost btn-sm">На сайт</a>
+      <button class="btn btn-ghost btn-sm" onclick="doLogout()">Вийти</button>
     </div>
   </header>
 
   <main class="main">
-    <!-- Stats -->
-    <div class="stats" id="statsArea">
-      <div class="stat-card">
-        <div class="stat-value" id="statTotal">—</div>
-        <div class="stat-label">Всього товарів</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="statTopDrop">—</div>
-        <div class="stat-label">Top Drop</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="statCategories">—</div>
-        <div class="stat-label">Категорій</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="statLastUpdate">—</div>
-        <div class="stat-label">Останнє оновлення</div>
-      </div>
-    </div>
-
-    <!-- Toolbar -->
     <div class="toolbar">
-      <div class="search-box">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-        <input type="text" placeholder="Пошук товарів..." id="searchInput" oninput="renderProducts()">
-      </div>
-      <div class="filter-pills" id="filterPills"></div>
-      <button class="btn btn-primary" onclick="openAddModal()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-        Додати товар
-      </button>
+      <button class="btn btn-primary" onclick="openAdd()">+ Додати товар</button>
+      <button class="btn btn-success" onclick="saveAll()" id="saveBtn">Зберегти все</button>
+      <span style="flex:1"></span>
+      <span style="font-size:13px;color:var(--text-muted);align-self:center" id="countLabel"></span>
     </div>
-
-    <!-- Products Table -->
-    <div class="products-table-wrap">
-      <div class="loading-overlay" id="loadingState">
-        <div class="spinner"></div>
-        Завантаження товарів...
-      </div>
-      <table class="products-table hidden" id="productsTable">
-        <thead>
-          <tr>
-            <th>Товар</th>
-            <th>Ціна</th>
-            <th>Категорія</th>
-            <th>Розміри</th>
-            <th>Статус</th>
-            <th>Дії</th>
-          </tr>
-        </thead>
-        <tbody id="productsBody"></tbody>
-      </table>
-      <div class="empty-state hidden" id="emptyState">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg>
-        <h3>Товарів не знайдено</h3>
-        <p>Додайте перший товар або змініть фільтр</p>
-      </div>
-    </div>
+    <div class="product-grid" id="productList"></div>
   </main>
 </div>
 
-<!-- Product Modal -->
-<div class="modal-overlay" id="productModal">
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
   <div class="modal">
     <div class="modal-header">
-      <h2 id="modalTitle">Додати товар</h2>
+      <h2 id="modalTitle">Новий товар</h2>
       <button class="modal-close" onclick="closeModal()">&times;</button>
     </div>
     <div class="modal-body">
       <input type="hidden" id="editId">
-
+      <div class="form-group"><label>Назва</label><input class="form-input" id="fName" placeholder="Назва товару"></div>
       <div class="form-row">
-        <div class="form-group">
-          <label>Назва</label>
-          <input type="text" class="form-input" id="fName" placeholder="Nike Air Max 90">
-        </div>
-        <div class="form-group">
-          <label>Ціна</label>
-          <input type="text" class="form-input" id="fPrice" placeholder="3 200">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Опис</label>
-        <textarea class="form-input" id="fDesc" placeholder="Короткий опис товару..."></textarea>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>Категорія</label>
-          <select class="form-input" id="fCategory" onchange="updateSizeOptions()">
-            <option value="Кросівки">Кросівки</option>
-            <option value="Худі та світшоти">Худі та світшоти</option>
-            <option value="Футболки">Футболки</option>
-            <option value="Штани та джинси">Штани та джинси</option>
-            <option value="Шкарпетки">Шкарпетки</option>
-            <option value="Аксесуари">Аксесуари</option>
+        <div class="form-group"><label>Ціна</label><input class="form-input" id="fPrice" placeholder="3 200"></div>
+        <div class="form-group"><label>Категорія</label>
+          <select class="form-input" id="fCategory">
+            <option>Кросівки</option><option>Худі та світшоти</option><option>Футболки</option><option>Штани та джинси</option><option>Шкарпетки</option><option>Аксесуари</option>
           </select>
         </div>
-        <div class="form-group">
-          <label>Зображення</label>
-          <div class="image-upload-zone" id="imageUploadZone" onclick="document.getElementById('fImage').click()">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:8px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-            <div>Натисніть або перетягніть файл</div>
-            <input type="file" id="fImage" accept="image/*" onchange="handleImageUpload(this)">
-          </div>
-          <div class="image-preview" id="imagePreview"></div>
-          <input type="hidden" id="fImageUrl">
-        </div>
       </div>
-
-      <div class="form-group">
-        <label>Розміри</label>
-        <div class="checkbox-group" id="sizeCheckboxes"></div>
-      </div>
-
-      <div class="form-group">
-        <div class="topdrop-toggle" id="topdropToggle" onclick="toggleTopDrop()">
-          <div class="toggle-track"><div class="toggle-thumb"></div></div>
-          <span style="font-size: 13px; font-weight: 600;">Top Drop</span>
-        </div>
-      </div>
+      <div class="form-group"><label>Опис</label><input class="form-input" id="fDesc" placeholder="Опис товару"></div>
+      <div class="form-group"><label>Посилання на фото (URL)</label><input class="form-input" id="fImage" placeholder="https://..."></div>
+      <div class="form-group"><label>Розміри</label><div class="checkbox-group" id="fSizes"></div></div>
+      <div class="form-group"><label><input type="checkbox" id="fTopDrop" style="margin-right:6px">TOP DROP</label></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal()">Скасувати</button>
-      <button class="btn btn-primary" id="saveBtn" onclick="saveProduct()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        Зберегти
-      </button>
+      <button class="btn btn-primary" onclick="saveProduct()" id="saveProductBtn">Зберегти</button>
     </div>
   </div>
 </div>
 
 <script>
-(function() {
-  const API_BASE = 'https://api.github.com/repos/porustzi/vibestore';
-  const PRODUCTS_PATH = 'content/products/products.json';
-  const UPLOAD_PATH = 'content/public/uploads';
-  const AUTH_ENDPOINT = '/api/auth/password';
-  const PASSWORD = '8934';
-  const TOKEN_KEY = 'vibestore-admin-token';
+const PASSWORD = 'vibe123store'
+const API = '/api/products'
 
-  const CATEGORIES = {
-    'Кросівки': ['37','38','39','40','41','42','43','44','45'],
-    'Худі та світшоти': ['S','M','L','XL'],
-    'Футболки': ['S','M','L','XL'],
-    'Штани та джинси': ['S','M','L','XL'],
-    'Шкарпетки': ['S','M','L','XL'],
-    'Аксесуари': ['S','M','L','XL']
-  };
+const SIZES = {
+  'Кросівки': ['37','38','39','40','41','42','43','44','45'],
+  'Худі та світшоти': ['S','M','L','XL'],
+  'Футболки': ['S','M','L','XL'],
+  'Штани та джинси': ['S','M','L','XL'],
+  'Шкарпетки': ['S','M','L','XL'],
+  'Аксесуари': ['S','M','L','XL']
+}
 
-  let token = localStorage.getItem(TOKEN_KEY);
-  let products = [];
-  let currentSha = '';
-  let activeFilter = 'all';
-  let topDrop = false;
+let products = []
 
-  // Toast
-  function toast(msg, type = 'success') {
-    const c = document.getElementById('toastContainer');
-    const t = document.createElement('div');
-    t.className = 'toast ' + type;
-    const icons = {
-      success: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>',
-      error: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>',
-      warning: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
-    };
-    t.innerHTML = (icons[type] || icons.success) + '<span>' + msg + '</span>';
-    c.appendChild(t);
-    setTimeout(() => t.remove(), 4000);
+function toast(msg, type='success') {
+  const t = document.createElement('div')
+  t.className = 'toast ' + type
+  t.textContent = msg
+  document.getElementById('toastBox').appendChild(t)
+  setTimeout(() => t.remove(), 3000)
+}
+
+async function doLogin() {
+  const pw = document.getElementById('loginPw').value.trim()
+  if (!pw) return
+  if (pw !== PASSWORD) {
+    document.getElementById('loginErr').textContent = 'Невірний пароль'
+    document.getElementById('loginErr').style.display = 'block'
+    return
   }
+  document.getElementById('loginPage').style.display = 'none'
+  document.getElementById('adminPage').style.display = 'block'
+  await loadProducts()
+}
 
-  // Confirm dialog
-  let confirmResolve = null;
-  window.closeConfirm = function() {
-    document.getElementById('confirmOverlay').classList.remove('open');
-    if (confirmResolve) confirmResolve(false);
-    confirmResolve = null;
-  };
+document.getElementById('loginPw').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin() })
 
-  function showConfirm(title, message) {
-    return new Promise(resolve => {
-      confirmResolve = resolve;
-      document.getElementById('confirmTitle').textContent = title;
-      document.getElementById('confirmMessage').textContent = message;
-      document.getElementById('confirmOverlay').classList.add('open');
-      document.getElementById('confirmAction').onclick = function() {
-        document.getElementById('confirmOverlay').classList.remove('open');
-        resolve(true);
-        confirmResolve = null;
-      };
-    });
+function doLogout() {
+  document.getElementById('adminPage').style.display = 'none'
+  document.getElementById('loginPage').style.display = 'flex'
+  document.getElementById('loginPw').value = ''
+}
+
+async function loadProducts() {
+  try {
+    const res = await fetch(API)
+    if (res.ok) {
+      const data = await res.json()
+      if (Array.isArray(data) && data.length > 0) products = data
+    }
+  } catch {}
+  render()
+}
+
+function render() {
+  const list = document.getElementById('productList')
+  document.getElementById('countLabel').textContent = products.length + ' товарів'
+  if (!products.length) {
+    list.innerHTML = '<div class="empty"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><p>Немає товарів. Додайте перший!</p></div>'
+    return
   }
+  list.innerHTML = products.map(p => `
+    <div class="product-item">
+      <img class="product-img" src="${p.images?.[0] || ''}" alt="" onerror="this.style.display='none'">
+      <div class="product-info">
+        <div class="product-name">${esc(p.name)}${p.topDrop ? '<span class="topdrop-tag">TOP DROP</span>' : ''}</div>
+        <div class="product-meta">${esc(p.price)} ₴ · ${esc(p.category)} · ${p.sizes?.join(', ') || ''}</div>
+        <div class="product-meta" style="margin-top:2px">${esc(p.desc || '')}</div>
+      </div>
+      <div class="product-actions">
+        <button class="btn btn-ghost btn-sm" onclick="editProduct(${p.id})">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id})">🗑</button>
+      </div>
+    </div>
+  `).join('')
+}
 
-  // API helpers
-  async function apiFetch(url, options = {}) {
-    const headers = options.headers || {};
-    if (token) headers['Authorization'] = 'Bearer ' + token;
-    headers['Accept'] = 'application/vnd.github.v3+json';
-    options.headers = headers;
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML }
 
-    const res = await fetch(url, options);
+function openAdd() {
+  document.getElementById('modalTitle').textContent = 'Новий товар'
+  document.getElementById('editId').value = ''
+  document.getElementById('fName').value = ''
+  document.getElementById('fPrice').value = ''
+  document.getElementById('fDesc').value = ''
+  document.getElementById('fImage').value = ''
+  document.getElementById('fCategory').value = 'Кросівки'
+  document.getElementById('fTopDrop').checked = false
+  renderSizes('Кросівки', [])
+  document.getElementById('fCategory').onchange = function() { renderSizes(this.value, []) }
+  document.getElementById('modal').classList.add('open')
+}
 
-    if (res.status === 401) {
-      token = null;
-      localStorage.removeItem(TOKEN_KEY);
-      showPage('login');
-      toast('Сесія закінчилася. Увійдіть знову.', 'error');
-      throw new Error('Unauthorized');
+function editProduct(id) {
+  const p = products.find(x => x.id === id)
+  if (!p) return
+  document.getElementById('modalTitle').textContent = 'Редагувати товар'
+  document.getElementById('editId').value = id
+  document.getElementById('fName').value = p.name
+  document.getElementById('fPrice').value = p.price
+  document.getElementById('fDesc').value = p.desc || ''
+  document.getElementById('fImage').value = p.images?.[0] || ''
+  document.getElementById('fCategory').value = p.category
+  document.getElementById('fTopDrop').checked = !!p.topDrop
+  renderSizes(p.category, p.sizes || [])
+  document.getElementById('fCategory').onchange = function() { renderSizes(this.value, []) }
+  document.getElementById('modal').classList.add('open')
+}
+
+function renderSizes(category, selected) {
+  const sizes = SIZES[category] || SIZES['Кросівки']
+  document.getElementById('fSizes').innerHTML = sizes.map(s =>
+    `<label class="checkbox-label"><input type="checkbox" value="${s}" ${selected.includes(s)?'checked':''}>${s}</label>`
+  ).join('')
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('open') }
+
+function saveProduct() {
+  const id = document.getElementById('editId').value
+  const name = document.getElementById('fName').value.trim()
+  const price = document.getElementById('fPrice').value.trim()
+  const desc = document.getElementById('fDesc').value.trim()
+  const image = document.getElementById('fImage').value.trim()
+  const category = document.getElementById('fCategory').value
+  const topDrop = document.getElementById('fTopDrop').checked
+  const sizes = [...document.querySelectorAll('#fSizes input:checked')].map(c => c.value)
+
+  if (!name) { toast('Введіть назву', 'warning'); return }
+  if (!price) { toast('Введіть ціну', 'warning'); return }
+
+  const imgArr = image ? [image] : []
+
+  if (id) {
+    const idx = products.findIndex(x => x.id === Number(id))
+    if (idx >= 0) {
+      products[idx] = { ...products[idx], name, price, desc, sizes, category, topDrop, images: imgArr.length ? imgArr : products[idx].images }
     }
-
-    if (res.status === 403) {
-      toast('GitHub API rate limit. Зачекайте.', 'warning');
-      throw new Error('Rate limited');
-    }
-
-    if (!res.ok) {
-      const err = await res.text();
-      throw new Error(err);
-    }
-
-    return res;
-  }
-
-  // Login
-  window.doLogin = async function() {
-    const pw = document.getElementById('loginPassword').value.trim();
-    if (!pw) { toast('Введіть пароль', 'warning'); return; }
-
-    const btn = document.getElementById('loginBtn');
-    btn.innerHTML = '<div class="spinner spinner-sm"></div> Вхід...';
-    btn.disabled = true;
-
-    try {
-      const res = await fetch(AUTH_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'password=' + encodeURIComponent(pw)
-      });
-
-      if (!res.ok) throw new Error('Невірний пароль');
-
-      const ghToken = document.getElementById('loginGithubToken').value.trim();
-      if (!ghToken) {
-        document.getElementById('loginError').textContent = 'Помилка: введіть GitHub токен';
-        document.getElementById('loginError').style.display = 'block';
-        toast('Введіть GitHub токен', 'warning');
-        return;
-      }
-
-      token = ghToken;
-      localStorage.setItem(TOKEN_KEY, token);
-      document.getElementById('loginError').style.display = 'none';
-      showPage('admin');
-      loadProducts();
-    } catch (e) {
-      document.getElementById('loginError').textContent = 'Помилка: ' + e.message;
-      document.getElementById('loginError').style.display = 'block';
-      toast('Помилка входу', 'error');
-    } finally {
-      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Увійти';
-      btn.disabled = false;
-    }
-  };
-
-  // Enter key on login
-  document.getElementById('loginPassword').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') doLogin();
-  });
-  document.getElementById('loginGithubToken').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') doLogin();
-  });
-
-  window.doLogout = function() {
-    token = null;
-    localStorage.removeItem(TOKEN_KEY);
-    showPage('login');
-  };
-
-  function showPage(page) {
-    document.getElementById('loginPage').classList.toggle('active', page === 'login');
-    document.getElementById('adminPage').classList.toggle('active', page === 'admin');
-  }
-
-  // Load products
-  async function loadProducts() {
-    document.getElementById('loadingState').classList.remove('hidden');
-    document.getElementById('productsTable').classList.add('hidden');
-    document.getElementById('emptyState').classList.add('hidden');
-
-    try {
-      const res = await apiFetch(API_BASE + '/contents/' + PRODUCTS_PATH);
-      const data = await res.json();
-      currentSha = data.sha;
-      const decoded = atob(data.content.replace(/\n/g, ''));
-      products = JSON.parse(decoded);
-      renderProducts();
-      renderFilters();
-      updateStats();
-    } catch (e) {
-      toast('Не вдалося завантажити товари', 'error');
-      document.getElementById('loadingState').innerHTML = '<div class="empty-state"><h3>Помилка завантаження</h3><p>' + e.message + '</p></div>';
-    }
-  }
-
-  // Save products to GitHub
-  async function saveToGitHub(commitMessage) {
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(products, null, 2))));
-    const body = {
-      message: commitMessage,
-      content: content,
-      sha: currentSha,
-      committer: { name: 'Vibe Store Admin', email: 'admin@vibestore.com' }
-    };
-
-    const res = await apiFetch(API_BASE + '/contents/' + PRODUCTS_PATH, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-
-    const data = await res.json();
-    currentSha = data.content.sha;
-    return data;
-  }
-
-  // Render
-  function renderFilters() {
-    const cats = [...new Set(products.map(p => p.category))];
-    const pills = document.getElementById('filterPills');
-    pills.innerHTML = '<button class="pill ' + (activeFilter === 'all' ? 'active' : '') + '" onclick="filterBy(\'all\')">Усі (' + products.length + ')</button>';
-    cats.forEach(c => {
-      const count = products.filter(p => p.category === c).length;
-      pills.innerHTML += '<button class="pill ' + (activeFilter === c ? 'active' : '') + '" onclick="filterBy(\'' + c + '\')">' + c + ' (' + count + ')</button>';
-    });
-  }
-
-  window.filterBy = function(cat) {
-    activeFilter = cat;
-    renderFilters();
-    renderProducts();
-  };
-
-  function renderProducts() {
-    const query = document.getElementById('searchInput').value.toLowerCase();
-    let filtered = products.filter(p => {
-      const matchCat = activeFilter === 'all' || p.category === activeFilter;
-      const matchSearch = !query || p.name.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query);
-      return matchCat && matchSearch;
-    });
-
-    const tbody = document.getElementById('productsBody');
-    const table = document.getElementById('productsTable');
-    const empty = document.getElementById('emptyState');
-    const loading = document.getElementById('loadingState');
-
-    loading.classList.add('hidden');
-
-    if (filtered.length === 0) {
-      table.classList.add('hidden');
-      empty.classList.remove('hidden');
-      return;
-    }
-
-    table.classList.remove('hidden');
-    empty.classList.add('hidden');
-
-    tbody.innerHTML = filtered.map(p => {
-      const img = (p.images && p.images[p.currentImageIndex || 0]) || '';
-      const sizes = p.sizes || {};
-      const sizeEntries = Object.entries(sizes);
-      const activeSizes = sizeEntries.filter(([k, v]) => v).map(([k]) => k);
-      const inactiveSizes = sizeEntries.filter(([k, v]) => !v).map(([k]) => k);
-
-      return '<tr>' +
-        '<td><div class="product-cell">' +
-          (img ? '<img class="product-thumb" src="' + img + '" alt="" onerror="this.style.display=\'none\'">' : '<div class="product-thumb" style="display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:20px">?</div>') +
-          '<div><div class="product-name">' + escHtml(p.name) + '</div>' +
-          '<div style="font-size:11px;color:var(--text-muted)">ID: ' + p.id + '</div></div>' +
-        '</div></td>' +
-        '<td><span class="product-price">' + escHtml(p.price) + ' ₴</span></td>' +
-        '<td><span class="product-category">' + escHtml(p.category) + '</span></td>' +
-        '<td><div class="product-sizes">' +
-          activeSizes.map(s => '<span class="size-badge active">' + s + '</span>').join('') +
-          inactiveSizes.slice(0, 2).map(s => '<span class="size-badge">' + s + '</span>').join('') +
-          (inactiveSizes.length > 2 ? '<span class="size-badge">+' + (inactiveSizes.length - 2) + '</span>' : '') +
-        '</div></td>' +
-        '<td>' + (p.topDrop ? '<span class="top-badge">TOP</span>' : '—') + '</td>' +
-        '<td><div class="actions-cell">' +
-          '<button class="btn btn-ghost btn-sm" onclick="editProduct(' + p.id + ')" title="Редагувати"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>' +
-          '<button class="btn btn-danger btn-sm" onclick="deleteProduct(' + p.id + ')" title="Видалити"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>' +
-        '</div></td>' +
-      '</tr>';
-    }).join('');
-  }
-
-  function updateStats() {
-    document.getElementById('statTotal').textContent = products.length;
-    document.getElementById('statTopDrop').textContent = products.filter(p => p.topDrop).length;
-    document.getElementById('statCategories').textContent = new Set(products.map(p => p.category)).size;
-    document.getElementById('statLastUpdate').textContent = new Date().toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
-  }
-
-  function escHtml(s) {
-    const d = document.createElement('div');
-    d.textContent = s || '';
-    return d.innerHTML;
-  }
-
-  // Modal
-  function openModal(title) {
-    document.getElementById('modalTitle').textContent = title;
-    document.getElementById('productModal').classList.add('open');
-  }
-
-  window.closeModal = function() {
-    document.getElementById('productModal').classList.remove('open');
-  };
-
-  window.openAddModal = function() {
-    document.getElementById('editId').value = '';
-    document.getElementById('fName').value = '';
-    document.getElementById('fPrice').value = '';
-    document.getElementById('fDesc').value = '';
-    document.getElementById('fCategory').value = 'Кросівки';
-    document.getElementById('fImageUrl').value = '';
-    document.getElementById('imagePreview').innerHTML = '';
-    topDrop = false;
-    document.getElementById('topdropToggle').classList.remove('active');
-    updateSizeOptions();
-    openModal('Додати товар');
-  };
-
-  window.editProduct = function(id) {
-    const p = products.find(x => x.id === id);
-    if (!p) return;
-
-    document.getElementById('editId').value = id;
-    document.getElementById('fName').value = p.name;
-    document.getElementById('fPrice').value = p.price;
-    document.getElementById('fDesc').value = p.desc;
-    document.getElementById('fCategory').value = p.category;
-    document.getElementById('fImageUrl').value = (p.images && p.images[0]) || '';
-    topDrop = !!p.topDrop;
-    document.getElementById('topdropToggle').classList.toggle('active', topDrop);
-
-    // Image preview
-    const preview = document.getElementById('imagePreview');
-    preview.innerHTML = '';
-    if (p.images && p.images.length > 0) {
-      p.images.forEach((url, i) => {
-        const img = document.createElement('img');
-        img.src = url;
-        img.className = i === (p.currentImageIndex || 0) ? 'active' : '';
-        preview.appendChild(img);
-      });
-    }
-
-    updateSizeOptions(p.sizes);
-    openModal('Редагувати товар');
-  };
-
-  window.toggleTopDrop = function() {
-    topDrop = !topDrop;
-    document.getElementById('topdropToggle').classList.toggle('active', topDrop);
-  };
-
-  window.updateSizeOptions = function(existingSizes) {
-    const cat = document.getElementById('fCategory').value;
-    const sizes = CATEGORIES[cat] || CATEGORIES['Кросівки'];
-    const container = document.getElementById('sizeCheckboxes');
-
-    container.innerHTML = sizes.map(s => {
-      const checked = existingSizes ? existingSizes[s] : true;
-      return '<label class="checkbox-item ' + (checked ? 'checked' : '') + '" onclick="this.classList.toggle(\'checked\')">' +
-        '<input type="checkbox" value="' + s + '" ' + (checked ? 'checked' : '') + '>' + s + '</label>';
-    }).join('');
-  };
-
-  window.handleImageUpload = async function(input) {
-    const file = input.files[0];
-    if (!file) return;
-
-    const zone = document.getElementById('imageUploadZone');
-    zone.innerHTML = '<div class="spinner"></div> Завантаження...';
-
-    try {
-      const reader = new FileReader();
-      reader.onload = async function(e) {
-        const base64 = e.target.result.split(',')[1];
-        const ext = file.name.split('.').pop();
-        const filename = Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-        const uploadUrl = API_BASE + '/contents/' + UPLOAD_PATH + '/' + filename;
-
-        try {
-          const res = await apiFetch(uploadUrl, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              message: 'admin: upload ' + filename,
-              content: base64,
-              committer: { name: 'Vibe Store Admin', email: 'admin@vibestore.com' }
-            })
-          });
-
-          const data = await res.json();
-          const imgUrl = '/' + UPLOAD_PATH.replace('content/', '') + '/' + filename;
-          document.getElementById('fImageUrl').value = imgUrl;
-
-          const preview = document.getElementById('imagePreview');
-          preview.innerHTML = '<img src="' + imgUrl + '" class="active">';
-
-          toast('Зображення завантажено');
-        } catch (err) {
-          toast('Помилка завантаження зображення', 'error');
-        }
-
-        zone.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:8px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><div>Натисніть або перетягніть файл</div>';
-      };
-      reader.readAsDataURL(file);
-    } catch (err) {
-      toast('Помилка читання файлу', 'error');
-      zone.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:8px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><div>Натисніть або перетягніть файл</div>';
-    }
-  };
-
-  // Save product
-  window.saveProduct = async function() {
-    const name = document.getElementById('fName').value.trim();
-    const price = document.getElementById('fPrice').value.trim();
-    const desc = document.getElementById('fDesc').value.trim();
-    const category = document.getElementById('fCategory').value;
-    const imageUrl = document.getElementById('fImageUrl').value.trim();
-    const editId = document.getElementById('editId').value;
-
-    if (!name || !price) {
-      toast('Заповніть назву та ціну', 'warning');
-      return;
-    }
-
-    const sizes = {};
-    document.querySelectorAll('#sizeCheckboxes .checkbox-item').forEach(el => {
-      const cb = el.querySelector('input');
-      sizes[cb.value] = el.classList.contains('checked');
-    });
-
-    const btn = document.getElementById('saveBtn');
-    btn.innerHTML = '<div class="spinner spinner-sm"></div> Збереження...';
-    btn.disabled = true;
-
-    try {
-      if (editId) {
-        // Edit
-        const idx = products.findIndex(p => p.id === parseInt(editId));
-        if (idx === -1) throw new Error('Товар не знайдено');
-
-        products[idx].name = name;
-        products[idx].price = price;
-        products[idx].desc = desc;
-        products[idx].category = category;
-        products[idx].sizes = sizes;
-        products[idx].topDrop = topDrop;
-        if (imageUrl) {
-          products[idx].images = [imageUrl];
-          products[idx].currentImageIndex = 0;
-        }
-
-        await saveToGitHub('admin: update product ' + name);
-        toast('Товар оновлено: ' + name);
-      } else {
-        // Add
-        const maxId = products.length > 0 ? Math.max(...products.map(p => p.id)) : 0;
-        const newProduct = {
-          id: maxId + 1,
-          name: name,
-          price: price,
-          desc: desc,
-          category: category,
-          sizes: sizes,
-          images: imageUrl ? [imageUrl] : [],
-          currentImageIndex: 0,
-          topDrop: topDrop
-        };
-
-        products.push(newProduct);
-        await saveToGitHub('admin: add product ' + name);
-        toast('Товар додано: ' + name);
-      }
-
-      closeModal();
-      renderProducts();
-      renderFilters();
-      updateStats();
-    } catch (e) {
-      toast('Помилка збереження: ' + e.message, 'error');
-    } finally {
-      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Зберегти';
-      btn.disabled = false;
-    }
-  };
-
-  // Delete product
-  window.deleteProduct = async function(id) {
-    const p = products.find(x => x.id === id);
-    if (!p) return;
-
-    const ok = await showConfirm('Видалити товар?', '«' + p.name + '» буде видалено назавжди.');
-    if (!ok) return;
-
-    try {
-      products = products.filter(x => x.id !== id);
-      await saveToGitHub('admin: remove product ' + p.name);
-      toast('Товар видалено');
-      renderProducts();
-      renderFilters();
-      updateStats();
-    } catch (e) {
-      toast('Помилка видалення: ' + e.message, 'error');
-      loadProducts();
-    }
-  };
-
-  // Drag & drop
-  const zone = document.getElementById('imageUploadZone');
-  zone.addEventListener('dragover', e => { e.preventDefault(); zone.style.borderColor = 'var(--accent)'; });
-  zone.addEventListener('dragleave', () => { zone.style.borderColor = ''; });
-  zone.addEventListener('drop', e => {
-    e.preventDefault();
-    zone.style.borderColor = '';
-    const input = document.getElementById('fImage');
-    input.files = e.dataTransfer.files;
-    handleImageUpload(input);
-  });
-
-  // Init
-  if (token) {
-    showPage('admin');
-    loadProducts();
   } else {
-    showPage('login');
+    const newId = products.length ? Math.max(...products.map(p => p.id)) + 1 : 1
+    products.push({ id: newId, name, price, desc, sizes, category, topDrop, images: imgArr.length ? imgArr : ['https://via.placeholder.com/300'], currentImageIndex: 0 })
   }
 
-  // Init size options
-  updateSizeOptions();
-})();
+  closeModal()
+  render()
+  toast(id ? 'Товар оновлено' : 'Товар додано')
+}
+
+function deleteProduct(id) {
+  if (!confirm('Видалити цей товар?')) return
+  products = products.filter(p => p.id !== id)
+  render()
+  toast('Товар видалено', 'warning')
+}
+
+async function saveAll() {
+  const btn = document.getElementById('saveBtn')
+  btn.innerHTML = '<div class="spinner"></div> Збереження...'
+  btn.disabled = true
+  try {
+    const res = await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ products })
+    })
+    if (!res.ok) throw new Error('Помилка сервера')
+    toast('Збережено! Товари оновлені на сайті.')
+  } catch (e) {
+    toast('Помилка: ' + e.message, 'error')
+  } finally {
+    btn.innerHTML = 'Зберегти все'
+    btn.disabled = false
+  }
+}
 </script>
 </body>
 </html>

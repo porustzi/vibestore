@@ -10,11 +10,26 @@ import { AnimatePresence, motion } from 'framer-motion'
 const HERO_BG = "/hero-bg-CtGpMX4r.jpg"
 const AUDIO_SRC = "/1234567.ogg"
 
-const loadProducts = () => {
+const loadProducts = async () => {
+  try {
+    const res = await fetch('/api/products')
+    if (res.ok) {
+      const data = await res.json()
+      if (Array.isArray(data) && data.length > 0) return data
+    }
+  } catch {}
   return defaultProducts
 }
 
-const saveProducts = () => {}
+const saveProducts = async (products) => {
+  try {
+    await fetch('/api/products', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ products })
+    })
+  } catch {}
+}
 
 function App() {
   const isAdminRoute = () => window.location.hash === "#/admin" || window.location.pathname === "/admin"

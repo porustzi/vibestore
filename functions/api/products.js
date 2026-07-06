@@ -25,16 +25,21 @@ export async function onRequestGet(context) {
 }
 
 export async function onRequestPost(context) {
-  const kv = context.env.PRODUCTS_KV
-  const body = await context.request.json()
-  const products = body.products
-  if (!products || !Array.isArray(products)) {
-    return new Response(JSON.stringify({ error: 'Invalid data' }), { status: 400 })
+  try {
+    const kv = context.env.PRODUCTS_KV
+    if (!kv) return new Response(JSON.stringify({ error: 'KV not bound' }), { status: 500 })
+    const body = await context.request.json()
+    const products = body.products
+    if (!products || !Array.isArray(products)) {
+      return new Response(JSON.stringify({ error: 'Invalid data' }), { status: 400 })
+    }
+    await kv.put('products', JSON.stringify(products))
+    return new Response(JSON.stringify({ ok: true }), {
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+    })
+  } catch (e) {
+    return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: { 'Access-Control-Allow-Origin': '*' } })
   }
-  await kv.put('products', JSON.stringify(products))
-  return new Response(JSON.stringify({ ok: true }), {
-    headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-  })
 }
 
 export async function onRequestOptions() {
