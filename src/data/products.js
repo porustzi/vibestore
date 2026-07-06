@@ -7,7 +7,8 @@ export const defaultProducts = [
     sizes: ["37","38","39","40","41","42","43","44","45"],
     category: "Кросівки",
     images: ["https://via.placeholder.com/150"],
-    currentImageIndex: 0
+    currentImageIndex: 0,
+    topDrop: true
   },
   {
     id: 2,
@@ -17,7 +18,8 @@ export const defaultProducts = [
     sizes: ["37","38","39","40","41","42","43","44","45"],
     category: "Кросівки",
     images: ["https://via.placeholder.com/150"],
-    currentImageIndex: 0
+    currentImageIndex: 0,
+    topDrop: true
   },
   {
     id: 3,
@@ -27,7 +29,8 @@ export const defaultProducts = [
     sizes: ["37","38","39","40","41","42","43","44","45"],
     category: "Кросівки",
     images: ["https://via.placeholder.com/150"],
-    currentImageIndex: 0
+    currentImageIndex: 0,
+    topDrop: true
   },
   {
     id: 4,
