@@ -15,7 +15,7 @@ export const defaultProducts = [
     price: "5 700",
     desc: "Масивний дизайн у стилі нульових.",
     sizes: ["37","38","39","40","41","42","43","44","45"],
-    category: "Кеди",
+    category: "Кросівки",
     images: ["https://via.placeholder.com/150"],
     currentImageIndex: 0
   },

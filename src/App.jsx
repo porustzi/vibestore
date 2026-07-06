@@ -8,8 +8,8 @@ import CloseIcon from './components/CloseIcon'
 import AudioPlayer from './components/AudioPlayer'
 import { AnimatePresence, motion } from 'framer-motion'
 
-const HERO_BG = "/vibestore/assets/hero-bg-CtGpMX4r.jpg"
-const AUDIO_SRC = "/vibestore/1234567.ogg"
+const HERO_BG = "/hero-bg-CtGpMX4r.jpg"
+const AUDIO_SRC = "/1234567.ogg"
 
 function App() {
   const [adminOpen, setAdminOpen] = useState(false)
@@ -781,7 +781,7 @@ ${productList}
           <div className="footer-links">
             <div className="footer-column">
               <h4>Каталог</h4>
-              {["Кросівки", "Худі", "Футболки", "Шкарпетки"].map(item => (
+              {["Кросівки", "Худі та світшоти", "Футболки", "Шкарпетки"].map(item => (
                 <span key={item} className="footer-link" onClick={() => { setActiveCategory(item); window.scrollTo(0, 0) }}>{item}</span>
               ))}
             </div>
