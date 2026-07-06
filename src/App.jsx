@@ -673,12 +673,6 @@ ${productList}
               ))}
             </div>
             <div className="footer-column">
-              <h4>Інформація</h4>
-              <span className="footer-link" onClick={() => setRulesOpen(true)}>Правила</span>
-              <span className="footer-link" onClick={() => setRulesOpen(true)}>Доставка та оплата</span>
-              <span className="footer-link" onClick={() => setRulesOpen(true)}>Повернення</span>
-            </div>
-            <div className="footer-column">
               <h4>Соцмережі</h4>
               <a href="https://instagram.com/vibestoree.ua" target="_blank" rel="noopener noreferrer" className="footer-link">Instagram</a>
               <a href="https://tiktok.com/@vibestore.ua" target="_blank" rel="noopener noreferrer" className="footer-link">TikTok</a>
