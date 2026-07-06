@@ -415,6 +415,9 @@ ${productList}
 
         {/* Products grid */}
         <section className="shop-section all-products-section">
+          <div className={`animated-title ${titleVisible ? "is-visible" : ""}`}>
+            {activeCategory === "Усі товари" ? "УСІ ТОВАРИ" : activeCategory.toUpperCase()}
+          </div>
           <div className="all-products-grid">
             {filteredProducts.length > 0 ? (
               filteredProducts.map(product => (
