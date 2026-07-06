@@ -15,7 +15,7 @@ export default function SplashScreen({ onDone }) {
       <div className="splash-glow" />
       <div className="splash-content">
         <div className="splash-title-fancy">𝐕𝐈𝐁𝐄 𝐒𝐓𝐎𝐑𝐄</div>
-        <div className="splash-subtitle">людкові речі під замовлення</div>
+        <div className="splash-subtitle">люксові речі під замовлення</div>
         <div className="splash-dots">
           <span className="splash-dot" />
           <span className="splash-dot" />
