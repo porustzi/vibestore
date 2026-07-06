@@ -340,33 +340,6 @@ ${productList}
           </div>
         </section>
 
-        {/* Top Drops — only on main page */}
-        {activeCategory === "Усі товари" && products.some(p => p.topDrop) && (
-          <section className="shop-section">
-            <div className={`animated-title ${titleVisible ? "is-visible" : ""}`} ref={titleRef}>
-              TOP DROPS
-            </div>
-            <div className="slider-container">
-              <div className="products-scroll-container">
-                {products.filter(p => p.topDrop).map(product => (
-                  <div key={product.id} className="product-scroll-anim" onClick={() => openProductModal(product)}>
-                    <div className="product-card">
-                      {adminOpen && (
-                        <div className="delete-icon" onClick={(e) => { e.stopPropagation(); handleDeleteProduct(product.id) }}>🗑</div>
-                      )}
-                      <div className="product-image-wrapper">
-                        <img src={product.images?.[0] || "https://via.placeholder.com/150"} alt={product.name} className="product-image" />
-                      </div>
-                      <div className="product-title">{product.name}</div>
-                      <div className="product-price">{product.price} грн</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
         {/* Products grid */}
         <section className="shop-section all-products-section">
           <div className={`animated-title ${titleVisible ? "is-visible" : ""}`}>
