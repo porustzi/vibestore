@@ -59,6 +59,15 @@ function App() {
   const footerRef = useRef()
 
   useEffect(() => {
+    const checkHash = () => {
+      if (window.location.hash === "#/admin") setAdminOpen(true)
+    }
+    window.addEventListener("hashchange", checkHash)
+    checkHash()
+    return () => window.removeEventListener("hashchange", checkHash)
+  }, [])
+
+  useEffect(() => {
     localStorage.setItem("vibestore_cart", JSON.stringify(cart))
   }, [cart])
 
@@ -85,11 +94,6 @@ function App() {
   }, [activeCategory])
 
   const handleLogoClick = () => {
-    if (window.innerWidth < 1024) {
-      alert("Адмін-панель доступна тільки на десктопі (ширина екрану більше 1024px)")
-      setLogoTaps(0)
-      return
-    }
     const next = logoTaps + 1
     setLogoTaps(next)
     if (next === 5) {
