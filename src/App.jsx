@@ -198,9 +198,13 @@ ${productList}
     setSending(false)
   }
 
-  const allSizes = selectedProduct?.category === "Кросівки"
-    ? sizesShoes
-    : sizesClothes
+  const allSizes = (() => {
+    const base = selectedProduct?.category === "Кросівки" ? sizesShoes : sizesClothes
+    const avail = selectedProduct?.sizes
+    if (!avail) return base
+    if (Array.isArray(avail)) return base
+    return base.filter(s => avail[s] !== false)
+  })()
 
   if (adminOpen) {
     return (
