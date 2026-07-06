@@ -1,6 +1,4 @@
 import { useState, useEffect, useRef } from 'react'
-import { collection, addDoc, deleteDoc, doc, onSnapshot } from 'firebase/firestore'
-import { db } from './config/firebase'
 import { sendOrderPhoto, getManagerLink } from './utils/telegram'
 import { categories, adminCategories, sizesShoes, sizesClothes, reviews } from './data/catalog'
 import { defaultProducts } from './data/products'
@@ -10,6 +8,21 @@ import { AnimatePresence, motion } from 'framer-motion'
 
 const HERO_BG = "/hero-bg-CtGpMX4r.jpg"
 const AUDIO_SRC = "/1234567.ogg"
+
+const loadProducts = () => {
+  try {
+    const cached = localStorage.getItem("vibestore_products")
+    if (cached) {
+      const parsed = JSON.parse(cached)
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed
+    }
+  } catch {}
+  return defaultProducts
+}
+
+const saveProducts = (products) => {
+  localStorage.setItem("vibestore_products", JSON.stringify(products))
+}
 
 function App() {
   const [adminOpen, setAdminOpen] = useState(false)
@@ -22,8 +35,7 @@ function App() {
   const [rulesOpen, setRulesOpen] = useState(false)
   const [activeCategory, setActiveCategory] = useState("Усі товари")
   const [titleVisible, setTitleVisible] = useState(false)
-  const [cartBadgeVisible, setCartBadgeVisible] = useState(false)
-  const [products, setProducts] = useState([])
+  const [products, setProducts] = useState(loadProducts)
   const [cart, setCart] = useState(() => {
     try { return JSON.parse(localStorage.getItem("vibestore_cart") || "[]") }
     catch { return [] }
@@ -41,24 +53,10 @@ function App() {
 
   const titleRef = useRef()
   const footerRef = useRef()
-  const observerRef = useRef(null)
 
   useEffect(() => {
     localStorage.setItem("vibestore_cart", JSON.stringify(cart))
   }, [cart])
-
-  useEffect(() => {
-    const q = collection(db, "products")
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const items = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
-      setProducts(items)
-      localStorage.setItem("vibestore_products", JSON.stringify(items))
-    }, () => {
-      const cached = localStorage.getItem("vibestore_products")
-      setProducts(cached ? JSON.parse(cached) : defaultProducts)
-    })
-    return () => unsubscribe()
-  }, [])
 
   useEffect(() => {
     if (window.Telegram?.WebApp) {
@@ -100,7 +98,7 @@ function App() {
     setTimeout(() => setLogoTaps(0), 2000)
   }
 
-  const handleAddProduct = async () => {
+  const handleAddProduct = () => {
     const name = document.getElementById("p-name")?.value.trim()
     const price = document.getElementById("p-price")?.value.trim()
     const category = document.getElementById("p-category")?.value
@@ -110,46 +108,44 @@ function App() {
 
     if (!name || !price || !category) return alert("Будь ласка, заповніть назву, ціну та категорію!")
 
-    setSending(true)
-    try {
-      await addDoc(collection(db, "products"), {
-        name,
-        price,
-        category,
-        description: desc || "",
-        images: files.length ? files : ["https://via.placeholder.com/150"],
-        currentImageIndex: 0,
-        sizes: (category === "Кросівки" || category === "Кеди") ? sizesShoes : sizesClothes,
-        createdAt: Date.now()
-      })
-      alert("Товар успішно додано!")
-      document.getElementById("p-name").value = ""
-      document.getElementById("p-price").value = ""
-      document.getElementById("p-category").value = ""
-      document.getElementById("p-desc").value = ""
-    } catch (err) {
-      console.error(err)
-      alert("Помилка при додаванні товару")
+    const imageUrls = files.length > 0
+      ? files.map(f => URL.createObjectURL(f))
+      : ["https://via.placeholder.com/150"]
+
+    const newProduct = {
+      id: Date.now(),
+      name,
+      price,
+      category,
+      desc: desc || "",
+      images: imageUrls,
+      currentImageIndex: 0,
+      sizes: (category === "Кросівки") ? [...sizesShoes] : [...sizesClothes],
+      createdAt: Date.now()
     }
-    setSending(false)
+
+    const updated = [...products, newProduct]
+    setProducts(updated)
+    saveProducts(updated)
+
+    document.getElementById("p-name").value = ""
+    document.getElementById("p-price").value = ""
+    document.getElementById("p-category").value = ""
+    document.getElementById("p-desc").value = ""
+    alert("Товар успішно додано!")
   }
 
-  const handleDeleteProduct = async (id) => {
+  const handleDeleteProduct = (id) => {
     if (!confirm("Видалити цей товар?")) return
-    try {
-      await deleteDoc(doc(db, "products", id))
-      setProducts(prev => prev.filter(p => p.id !== id))
-    } catch (err) {
-      console.error(err)
-    }
+    const updated = products.filter(p => p.id !== id)
+    setProducts(updated)
+    saveProducts(updated)
   }
 
   const addToCart = (product, size) => {
     setCart(prev => [...prev, { ...product, selectedSize: size, cartId: Date.now() }])
     setSelectedProduct(null)
     setSelectedSize(null)
-    setCartBadgeVisible(true)
-    setTimeout(() => setCartBadgeVisible(false), 300)
   }
 
   const removeFromCart = (cartId) => {
@@ -216,7 +212,6 @@ ${productList}
       await sendOrderPhoto(screenshotFile, caption)
       setOrderSent(true)
       setCart([])
-      setCheckoutOpen(false)
 
       setTimeout(() => {
         setCheckoutOpen(false)
@@ -235,9 +230,7 @@ ${productList}
     setSending(false)
   }
 
-  const formatPrice = (price) => `${price} грн`
-
-  const allSizes = selectedProduct?.category === "Кросівки" || selectedProduct?.category === "Кеди"
+  const allSizes = selectedProduct?.category === "Кросівки"
     ? sizesShoes
     : sizesClothes
 
@@ -280,8 +273,8 @@ ${productList}
               <input id="p-file" type="file" accept="image/*" multiple style={{ display: "none" }} />
               <label htmlFor="p-file" className="file-trigger">Обрати файли</label>
             </div>
-            <button className="admin-submit" onClick={handleAddProduct} disabled={sending}>
-              {sending ? "Завантаження..." : "Додати товар"}
+            <button className="admin-submit" onClick={handleAddProduct}>
+              Додати товар
             </button>
           </div>
         </div>
@@ -297,13 +290,14 @@ ${productList}
         <h2 className="drawer-title">КАТАЛОГ</h2>
         <div className="catalog-content">
           <div className="catalog-section">
-            <div
-              className={`catalog-list-item ${activeCategory === "Усі товари" ? "active-category" : ""}`}
-              onClick={() => { setActiveCategory("Усі товари"); setCatalogOpen(false) }}
-              style={{ padding: "11px 0", fontSize: 17, fontWeight: 700, borderBottom: "1px solid #f2f2f2", cursor: "pointer" }}
-            >
-              Усі товари
-            </div>
+            <ul className="catalog-list">
+              <li
+                className={activeCategory === "Усі товари" ? "active-category" : ""}
+                onClick={() => { setActiveCategory("Усі товари"); setCatalogOpen(false) }}
+              >
+                Усі товари
+              </li>
+            </ul>
           </div>
           {categories.map((section, idx) => (
             <div key={idx} className="catalog-section">
@@ -544,7 +538,6 @@ ${productList}
                 </div>
               ) : (
                 <>
-                  {/* Step indicator */}
                   <div className="step-indicator">
                     <div className={`step ${checkoutStep >= 1 ? "active" : ""}`}>
                       <span>1</span> Клієнт
@@ -561,73 +554,45 @@ ${productList}
 
                   <div className="checkout-step-content">
                     <div className="step-panel">
-                      {/* Step 1: Client */}
                       {checkoutStep === 1 && (
                         <>
                           <h3>Клієнт</h3>
                           <div className="input-group">
                             <span className="input-icon-emoji">👤</span>
-                            <input
-                              type="text"
-                              placeholder="ПІБ"
-                              value={clientInfo.fullName}
-                              onChange={e => setClientInfo(p => ({ ...p, fullName: e.target.value }))}
-                            />
+                            <input type="text" placeholder="ПІБ" value={clientInfo.fullName}
+                              onChange={e => setClientInfo(p => ({ ...p, fullName: e.target.value }))} />
                           </div>
                           <div className="input-group">
                             <span className="input-icon-emoji">📞</span>
-                            <input
-                              type="tel"
-                              placeholder="Телефон"
-                              value={clientInfo.phone}
-                              onChange={e => setClientInfo(p => ({ ...p, phone: e.target.value }))}
-                            />
+                            <input type="tel" placeholder="Телефон" value={clientInfo.phone}
+                              onChange={e => setClientInfo(p => ({ ...p, phone: e.target.value }))} />
                           </div>
                           <div className="input-group">
                             <span className="input-icon-emoji">📍</span>
-                            <input
-                              type="text"
-                              placeholder="Місто"
-                              value={clientInfo.city}
-                              onChange={e => setClientInfo(p => ({ ...p, city: e.target.value }))}
-                            />
+                            <input type="text" placeholder="Місто" value={clientInfo.city}
+                              onChange={e => setClientInfo(p => ({ ...p, city: e.target.value }))} />
                           </div>
                           <div className="input-group">
                             <span className="input-icon-emoji">📦</span>
-                            <input
-                              type="text"
-                              placeholder="Відділення Нової Пошти"
-                              value={clientInfo.novaPoshta}
-                              onChange={e => setClientInfo(p => ({ ...p, novaPoshta: e.target.value }))}
-                            />
+                            <input type="text" placeholder="Відділення Нової Пошти" value={clientInfo.novaPoshta}
+                              onChange={e => setClientInfo(p => ({ ...p, novaPoshta: e.target.value }))} />
                           </div>
-                          <button
-                            className="step-next-btn"
+                          <button className="step-next-btn"
                             disabled={!clientInfo.fullName || !clientInfo.phone || !clientInfo.city || !clientInfo.novaPoshta}
-                            onClick={() => setCheckoutStep(2)}
-                          >
+                            onClick={() => setCheckoutStep(2)}>
                             Далі
                           </button>
                         </>
                       )}
 
-                      {/* Step 2: Payment */}
                       {checkoutStep === 2 && (
                         <>
                           <h3>Оплата</h3>
                           <div className="payment-methods">
-                            <div
-                              className={`payment-option ${paymentMethod === "card" ? "active" : ""}`}
-                              onClick={() => setPaymentMethod("card")}
-                            >
-                              💳 Картка (Mono)
-                            </div>
-                            <div
-                              className={`payment-option ${paymentMethod === "iban" ? "active" : ""}`}
-                              onClick={() => setPaymentMethod("iban")}
-                            >
-                              🏦 IBAN (ФОП ПУМБ)
-                            </div>
+                            <div className={`payment-option ${paymentMethod === "card" ? "active" : ""}`}
+                              onClick={() => setPaymentMethod("card")}>💳 Картка (Mono)</div>
+                            <div className={`payment-option ${paymentMethod === "iban" ? "active" : ""}`}
+                              onClick={() => setPaymentMethod("iban")}>🏦 IBAN (ФОП ПУМБ)</div>
                           </div>
 
                           {paymentMethod === "card" && (
@@ -645,37 +610,20 @@ ${productList}
                           )}
 
                           <div className="payment-methods">
-                            <div
-                              className={`payment-option ${paymentType === "full" ? "active" : ""}`}
-                              onClick={() => setPaymentType("full")}
-                            >
-                              Повна оплата (100%)
-                            </div>
-                            <div
-                              className={`payment-option ${paymentType === "half" ? "active" : ""}`}
-                              onClick={() => setPaymentType("half")}
-                            >
-                              Передплата (50%)
-                            </div>
+                            <div className={`payment-option ${paymentType === "full" ? "active" : ""}`}
+                              onClick={() => setPaymentType("full")}>Повна оплата (100%)</div>
+                            <div className={`payment-option ${paymentType === "half" ? "active" : ""}`}
+                              onClick={() => setPaymentType("half")}>Передплата (50%)</div>
                           </div>
 
                           <AudioPlayer src={AUDIO_SRC} />
 
                           <div className="screenshot-upload-section">
                             <div className="screenshot-label">
-                              <span className="screenshot-icon">📸</span>
-                              Скріншот оплати
+                              <span className="screenshot-icon">📸</span> Скріншот оплати
                             </div>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              id="payment-screenshot"
-                              style={{ display: "none" }}
-                              onChange={e => {
-                                const file = e.target.files?.[0]
-                                if (file) setScreenshotFile(file)
-                              }}
-                            />
+                            <input type="file" accept="image/*" id="payment-screenshot" style={{ display: "none" }}
+                              onChange={e => { const f = e.target.files?.[0]; if (f) setScreenshotFile(f) }} />
                             {screenshotFile ? (
                               <div className="screenshot-preview">
                                 <span>✅ {screenshotFile.name}</span>
@@ -684,8 +632,7 @@ ${productList}
                             ) : (
                               <label htmlFor="payment-screenshot" className="screenshot-upload-area">
                                 <div className="upload-placeholder">
-                                  <span>📤</span>
-                                  <span>Натисніть для завантаження</span>
+                                  <span>📤</span><span>Натисніть для завантаження</span>
                                 </div>
                               </label>
                             )}
@@ -695,24 +642,20 @@ ${productList}
                             <input type="checkbox" checked={paymentConfirmed} onChange={e => setPaymentConfirmed(e.target.checked)} />
                             Я підтверджую оплату
                           </label>
-
                           <label className="payment-confirm-checkbox">
                             <input type="checkbox" checked={termsAccepted} onChange={e => setTermsAccepted(e.target.checked)} />
                             <span>Я погоджуюсь з <a href="#" onClick={e => { e.preventDefault(); setRulesOpen(true) }} style={{ color: "#007AFF" }}>правилами магазину</a></span>
                           </label>
 
                           <button className="step-back-btn" onClick={() => setCheckoutStep(1)}>Назад</button>
-                          <button
-                            className="step-next-btn"
+                          <button className="step-next-btn"
                             disabled={!paymentMethod || !paymentType || !isCheckoutReady}
-                            onClick={() => setCheckoutStep(3)}
-                          >
+                            onClick={() => setCheckoutStep(3)}>
                             Далі
                           </button>
                         </>
                       )}
 
-                      {/* Step 3: Confirmation */}
                       {checkoutStep === 3 && (
                         <>
                           <h3>Підтвердження</h3>
@@ -725,11 +668,8 @@ ${productList}
                             </div>
                           </div>
                           <button className="step-back-btn" onClick={() => setCheckoutStep(2)}>Назад</button>
-                          <button
-                            className={`confirm-order-btn ${isCheckoutReady ? "active" : "disabled"}`}
-                            disabled={!isCheckoutReady || sending}
-                            onClick={submitOrder}
-                          >
+                          <button className={`confirm-order-btn ${isCheckoutReady ? "active" : "disabled"}`}
+                            disabled={!isCheckoutReady || sending} onClick={submitOrder}>
                             {sending ? "Надсилаємо..." : "Підтвердити замовлення"}
                           </button>
                           <div className="telegram-manager-link">
@@ -741,7 +681,6 @@ ${productList}
                       )}
                     </div>
 
-                    {/* Summary sidebar */}
                     <div className="checkout-summary">
                       <h3>Ваше замовлення</h3>
                       <div className="summary-items">
@@ -759,9 +698,7 @@ ${productList}
                         <span>Разом:</span>
                         <span className="total-amount">{getCartTotal()} грн</span>
                       </div>
-                      <div className="summary-note">
-                        Остаточна сума залежить від типу оплати
-                      </div>
+                      <div className="summary-note">Остаточна сума залежить від типу оплати</div>
                     </div>
                   </div>
                 </>
