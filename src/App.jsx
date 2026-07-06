@@ -11,19 +11,27 @@ import { AnimatePresence, motion } from 'framer-motion'
 const HERO_BG = "/hero-bg-CtGpMX4r.jpg"
 const AUDIO_SRC = "/1234567.ogg"
 
-const loadProducts = () => {
+const API_BASE = ""
+
+const loadProducts = async () => {
   try {
-    const cached = localStorage.getItem("vibestore_products")
-    if (cached) {
-      const parsed = JSON.parse(cached)
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed
+    const res = await fetch(`${API_BASE}/api/products`)
+    if (res.ok) {
+      const data = await res.json()
+      if (Array.isArray(data) && data.length > 0) return data
     }
   } catch {}
   return defaultProducts
 }
 
-const saveProducts = (products) => {
-  localStorage.setItem("vibestore_products", JSON.stringify(products))
+const saveProducts = async (products) => {
+  try {
+    await fetch(`${API_BASE}/api/products`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ products })
+    })
+  } catch {}
 }
 
 function App() {
@@ -39,7 +47,11 @@ function App() {
   const [rulesOpen, setRulesOpen] = useState(false)
   const [activeCategory, setActiveCategory] = useState("Усі товари")
   const [titleVisible, setTitleVisible] = useState(false)
-  const [products, setProducts] = useState(loadProducts)
+  const [products, setProducts] = useState(defaultProducts)
+
+  useEffect(() => {
+    loadProducts().then(data => setProducts(data))
+  }, [])
   const [cart, setCart] = useState(() => {
     try { return JSON.parse(localStorage.getItem("vibestore_cart") || "[]") }
     catch { return [] }
@@ -103,11 +115,11 @@ function App() {
     setTimeout(() => setLogoTaps(0), 2000)
   }
 
-  const handleDeleteProduct = (id) => {
+  const handleDeleteProduct = async (id) => {
     if (!confirm("Видалити цей товар?")) return
     const updated = products.filter(p => p.id !== id)
     setProducts(updated)
-    saveProducts(updated)
+    await saveProducts(updated)
   }
 
   const addToCart = (product, size) => {

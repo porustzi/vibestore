@@ -99,7 +99,7 @@ export default function AdminPanel({ products, setProducts, saveProducts, onClos
     setErrors({})
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!validate()) return
 
     const productData = {
@@ -115,13 +115,12 @@ export default function AdminPanel({ products, setProducts, saveProducts, onClos
     let updated
     if (editingId) {
       updated = products.map(p => p.id === editingId ? { ...p, ...productData } : p)
-      showToast("Товар оновлено")
     } else {
       updated = [...products, { id: Date.now(), ...productData }]
-      showToast("Товар додано")
     }
     setProducts(updated)
-    saveProducts(updated)
+    await saveProducts(updated)
+    showToast(editingId ? "Товар оновлено" : "Товар додано")
     resetForm()
     setTab("list")
   }
@@ -149,16 +148,16 @@ export default function AdminPanel({ products, setProducts, saveProducts, onClos
     setConfirmDelete(id)
   }
 
-  const confirmDeleteAction = () => {
+  const confirmDeleteAction = async () => {
     const updated = products.filter(p => p.id !== confirmDelete)
     setProducts(updated)
-    saveProducts(updated)
+    await saveProducts(updated)
     if (editingId === confirmDelete) resetForm()
     setConfirmDelete(null)
     showToast("Товар видалено")
   }
 
-  const moveProduct = (id, dir) => {
+  const moveProduct = async (id, dir) => {
     const idx = products.findIndex(p => p.id === id)
     const newIdx = idx + dir
     if (newIdx < 0 || newIdx >= products.length) return
@@ -166,7 +165,7 @@ export default function AdminPanel({ products, setProducts, saveProducts, onClos
     const [item] = arr.splice(idx, 1)
     arr.splice(newIdx, 0, item)
     setProducts(arr)
-    saveProducts(arr)
+    await saveProducts(arr)
   }
 
   const getAvailableSizes = (product) => {
