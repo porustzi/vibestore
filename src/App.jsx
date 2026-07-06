@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { sendOrderPhoto, getManagerLink } from './utils/telegram'
-import { categories, adminCategories, sizesShoes, sizesClothes, reviews } from './data/catalog'
+import { categories, reviews, sizesShoes, sizesClothes } from './data/catalog'
 import { defaultProducts } from './data/products'
 import CloseIcon from './components/CloseIcon'
 import AudioPlayer from './components/AudioPlayer'
+import SplashScreen from './components/SplashScreen'
+import AdminPanel from './components/AdminPanel'
 import { AnimatePresence, motion } from 'framer-motion'
 
 const HERO_BG = "/hero-bg-CtGpMX4r.jpg"
@@ -25,6 +27,7 @@ const saveProducts = (products) => {
 }
 
 function App() {
+  const [splashDone, setSplashDone] = useState(false)
   const [adminOpen, setAdminOpen] = useState(false)
   const [logoTaps, setLogoTaps] = useState(0)
   const [selectedProduct, setSelectedProduct] = useState(null)
@@ -89,50 +92,10 @@ function App() {
     const next = logoTaps + 1
     setLogoTaps(next)
     if (next === 5) {
-      if (prompt("Введіть пароль адміністратора:") === "8934") {
-        setAdminOpen(true)
-        alert("Ласкаво просимо до панелі керування!")
-      }
+      setAdminOpen(true)
       setLogoTaps(0)
     }
     setTimeout(() => setLogoTaps(0), 2000)
-  }
-
-  const handleAddProduct = () => {
-    const name = document.getElementById("p-name")?.value.trim()
-    const price = document.getElementById("p-price")?.value.trim()
-    const category = document.getElementById("p-category")?.value
-    const desc = document.getElementById("p-desc")?.value.trim()
-    const fileInput = document.getElementById("p-file")
-    const files = fileInput?.files ? Array.from(fileInput.files) : []
-
-    if (!name || !price || !category) return alert("Будь ласка, заповніть назву, ціну та категорію!")
-
-    const imageUrls = files.length > 0
-      ? files.map(f => URL.createObjectURL(f))
-      : ["https://via.placeholder.com/150"]
-
-    const newProduct = {
-      id: Date.now(),
-      name,
-      price,
-      category,
-      desc: desc || "",
-      images: imageUrls,
-      currentImageIndex: 0,
-      sizes: (category === "Кросівки") ? [...sizesShoes] : [...sizesClothes],
-      createdAt: Date.now()
-    }
-
-    const updated = [...products, newProduct]
-    setProducts(updated)
-    saveProducts(updated)
-
-    document.getElementById("p-name").value = ""
-    document.getElementById("p-price").value = ""
-    document.getElementById("p-category").value = ""
-    document.getElementById("p-desc").value = ""
-    alert("Товар успішно додано!")
   }
 
   const handleDeleteProduct = (id) => {
@@ -236,6 +199,8 @@ ${productList}
 
   return (
     <div className="app-container">
+      {!splashDone && <SplashScreen onDone={() => setSplashDone(true)} />}
+
       {/* ── Header ── */}
       <header className="main-header">
         <div className="nav-buttons">
@@ -250,34 +215,13 @@ ${productList}
       </header>
 
       {/* ── Admin Panel ── */}
-      {adminOpen && window.innerWidth >= 1024 && (
-        <div className="admin-panel">
-          <div className="admin-panel-header">
-            <h2>⚡ Панель керування</h2>
-            <button className="admin-close-btn" onClick={() => setAdminOpen(false)}>✕</button>
-          </div>
-          <div className="admin-form">
-            <input id="p-name" type="text" placeholder="Назва товару" className="admin-input" />
-            <div className="admin-row">
-              <input id="p-price" type="number" placeholder="Ціна (UAH)" className="admin-input" />
-              <select id="p-category" className="admin-input">
-                <option value="">Категорія</option>
-                {adminCategories.map(c => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </select>
-            </div>
-            <input id="p-desc" type="text" placeholder="Опис" className="admin-input" />
-            <div className="file-zone">
-              <label className="file-label">Фото товару</label>
-              <input id="p-file" type="file" accept="image/*" multiple style={{ display: "none" }} />
-              <label htmlFor="p-file" className="file-trigger">Обрати файли</label>
-            </div>
-            <button className="admin-submit" onClick={handleAddProduct}>
-              Додати товар
-            </button>
-          </div>
-        </div>
+      {adminOpen && (
+        <AdminPanel
+          products={products}
+          setProducts={setProducts}
+          saveProducts={saveProducts}
+          onClose={() => setAdminOpen(false)}
+        />
       )}
 
       {/* ── Drawer Overlay ── */}
